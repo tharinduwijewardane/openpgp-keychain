@@ -17,18 +17,13 @@
 
 package org.sufficientlysecure.keychain.provider;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-
+import android.content.*;
+import android.database.Cursor;
+import android.database.DatabaseUtils;
+import android.net.Uri;
+import android.os.RemoteException;
 import org.spongycastle.bcpg.ArmoredOutputStream;
-import org.spongycastle.openpgp.PGPKeyRing;
-import org.spongycastle.openpgp.PGPPublicKey;
-import org.spongycastle.openpgp.PGPPublicKeyRing;
-import org.spongycastle.openpgp.PGPSecretKey;
-import org.spongycastle.openpgp.PGPSecretKeyRing;
-import org.spongycastle.openpgp.PGPSignature;
+import org.spongycastle.openpgp.*;
 import org.sufficientlysecure.keychain.Constants;
 import org.sufficientlysecure.keychain.pgp.PgpConversionHelper;
 import org.sufficientlysecure.keychain.pgp.PgpHelper;
@@ -42,15 +37,10 @@ import org.sufficientlysecure.keychain.service.remote.AppSettings;
 import org.sufficientlysecure.keychain.util.IterableIterator;
 import org.sufficientlysecure.keychain.util.Log;
 
-import android.content.ContentProviderOperation;
-import android.content.ContentResolver;
-import android.content.ContentValues;
-import android.content.Context;
-import android.content.OperationApplicationException;
-import android.database.Cursor;
-import android.database.DatabaseUtils;
-import android.net.Uri;
-import android.os.RemoteException;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Date;
 
 public class ProviderHelper {
 
@@ -111,7 +101,7 @@ public class ProviderHelper {
     public static PGPPublicKey getPGPPublicKeyByKeyId(Context context, long keyId) {
         PGPPublicKeyRing keyRing = getPGPPublicKeyRingByKeyId(context, keyId);
 
-        return (keyRing == null)? null : keyRing.getPublicKey(keyId);
+        return (keyRing == null) ? null : keyRing.getPublicKey(keyId);
     }
 
     /**
@@ -162,7 +152,8 @@ public class ProviderHelper {
 
         // get current _ID of key
         long currentRowId = -1;
-        Cursor oldQuery = context.getContentResolver().query(deleteUri, new String[]{KeyRings._ID}, null, null, null);
+        Cursor oldQuery = context.getContentResolver()
+                .query(deleteUri, new String[]{KeyRings._ID}, null, null, null);
         if (oldQuery != null && oldQuery.moveToFirst()) {
             currentRowId = oldQuery.getLong(0);
         } else {
@@ -178,10 +169,12 @@ public class ProviderHelper {
 
         ContentValues values = new ContentValues();
         // use exactly the same _ID again to replace key in-place.
-        // NOTE: If we would not use the same _ID again, getting back to the ViewKeyActivity would result in Nullpointer,
+        // NOTE: If we would not use the same _ID again,
+        // getting back to the ViewKeyActivity would result in Nullpointer,
         // because the currently loaded key would be gone from the database
-        if (currentRowId != -1)
+        if (currentRowId != -1) {
             values.put(KeyRings._ID, currentRowId);
+        }
         values.put(KeyRings.MASTER_KEY_ID, masterKeyId);
         values.put(KeyRings.KEY_RING_DATA, keyRing.getEncoded());
 
@@ -205,8 +198,11 @@ public class ProviderHelper {
             ++userIdRank;
         }
 
-        for (PGPSignature certification : new IterableIterator<PGPSignature>(masterKey.getSignaturesOfType(PGPSignature.POSITIVE_CERTIFICATION))) {
-            //TODO: how to do this?? we need to verify the signatures again and again when they are displayed...
+        for (PGPSignature certification :
+                new IterableIterator<PGPSignature>(
+                        masterKey.getSignaturesOfType(PGPSignature.POSITIVE_CERTIFICATION))) {
+            // TODO: how to do this??
+            // we need to verify the signatures again and again when they are displayed...
 //            if (certification.verify
 //            operations.add(buildPublicKeyOperations(context, keyRingRowId, key, rank));
         }
@@ -233,7 +229,8 @@ public class ProviderHelper {
 
         // get current _ID of key
         long currentRowId = -1;
-        Cursor oldQuery = context.getContentResolver().query(deleteUri, new String[]{KeyRings._ID}, null, null, null);
+        Cursor oldQuery = context.getContentResolver()
+                .query(deleteUri, new String[]{KeyRings._ID}, null, null, null);
         if (oldQuery != null && oldQuery.moveToFirst()) {
             currentRowId = oldQuery.getLong(0);
         } else {
@@ -249,10 +246,12 @@ public class ProviderHelper {
 
         ContentValues values = new ContentValues();
         // use exactly the same _ID again to replace key in-place.
-        // NOTE: If we would not use the same _ID again, getting back to the ViewKeyActivity would result in Nullpointer,
+        // NOTE: If we would not use the same _ID again,
+        // getting back to the ViewKeyActivity would result in Nullpointer,
         // because the currently loaded key would be gone from the database
-        if (currentRowId != -1)
+        if (currentRowId != -1) {
             values.put(KeyRings._ID, currentRowId);
+        }
         values.put(KeyRings.MASTER_KEY_ID, masterKeyId);
         values.put(KeyRings.KEY_RING_DATA, keyRing.getEncoded());
 
@@ -405,6 +404,30 @@ public class ProviderHelper {
     }
 
     /**
+     * Private helper method
+     */
+    private static ArrayList<Long> getKeyRingsRowIds(Context context, Uri queryUri) {
+        Cursor cursor = context.getContentResolver().query(queryUri,
+                new String[]{KeyRings._ID}, null, null, null);
+
+        ArrayList<Long> rowIds = new ArrayList<Long>();
+        if (cursor != null) {
+            int idCol = cursor.getColumnIndex(KeyRings._ID);
+            if (cursor.moveToFirst()) {
+                do {
+                    rowIds.add(cursor.getLong(idCol));
+                } while (cursor.moveToNext());
+            }
+        }
+
+        if (cursor != null) {
+            cursor.close();
+        }
+
+        return rowIds;
+    }
+
+    /**
      * Retrieves ids of all SecretKeyRings
      */
     public static ArrayList<Long> getSecretKeyRingsMasterKeyIds(Context context) {
@@ -420,6 +443,22 @@ public class ProviderHelper {
         return getKeyRingsMasterKeyIds(context, queryUri);
     }
 
+    /**
+     * Retrieves ids of all SecretKeyRings
+     */
+    public static ArrayList<Long> getSecretKeyRingsRowIds(Context context) {
+        Uri queryUri = KeyRings.buildSecretKeyRingsUri();
+        return getKeyRingsRowIds(context, queryUri);
+    }
+
+    /**
+     * Retrieves ids of all PublicKeyRings
+     */
+    public static ArrayList<Long> getPublicKeyRingsRowIds(Context context) {
+        Uri queryUri = KeyRings.buildPublicKeyRingsUri();
+        return getKeyRingsRowIds(context, queryUri);
+    }
+
     public static void deletePublicKeyRing(Context context, long rowId) {
         ContentResolver cr = context.getContentResolver();
         cr.delete(KeyRings.buildPublicKeyRingsUri(Long.toString(rowId)), null, null);
@@ -428,6 +467,15 @@ public class ProviderHelper {
     public static void deleteSecretKeyRing(Context context, long rowId) {
         ContentResolver cr = context.getContentResolver();
         cr.delete(KeyRings.buildSecretKeyRingsUri(Long.toString(rowId)), null, null);
+    }
+
+    public static void deleteUnifiedKeyRing(Context context,String masterKeyId,boolean isSecretKey){
+        ContentResolver cr= context.getContentResolver();
+        cr.delete(KeyRings.buildPublicKeyRingsByMasterKeyIdUri(masterKeyId),null,null);
+        if(isSecretKey){
+            cr.delete(KeyRings.buildSecretKeyRingsByMasterKeyIdUri(masterKeyId),null,null);
+        }
+
     }
 
     /**
@@ -443,20 +491,20 @@ public class ProviderHelper {
      */
     public static boolean getSecretMasterKeyCanSign(Context context, long keyRingRowId) {
         Uri queryUri = KeyRings.buildSecretKeyRingsUri(String.valueOf(keyRingRowId));
-        return getMasterKeyCanSign(context, queryUri, keyRingRowId);
+        return getMasterKeyCanSign(context, queryUri);
     }
 
     /**
      * Private helper method to get master key private empty status of keyring by its row id
      */
-    private static boolean getMasterKeyCanSign(Context context, Uri queryUri, long keyRingRowId) {
+    public static boolean getMasterKeyCanSign(Context context, Uri queryUri) {
         String[] projection = new String[]{
                 KeyRings.MASTER_KEY_ID,
                 "(SELECT COUNT(sign_keys." + Keys._ID + ") FROM " + Tables.KEYS
                         + " AS sign_keys WHERE sign_keys." + Keys.KEY_RING_ROW_ID + " = "
                         + KeychainDatabase.Tables.KEY_RINGS + "." + KeyRings._ID
                         + " AND sign_keys." + Keys.CAN_SIGN + " = '1' AND " + Keys.IS_MASTER_KEY
-                        + " = 1) AS sign",};
+                        + " = 1) AS sign", };
 
         ContentResolver cr = context.getContentResolver();
         Cursor cursor = cr.query(queryUri, projection, null, null, null);
@@ -473,6 +521,12 @@ public class ProviderHelper {
         }
 
         return (masterKeyId > 0);
+    }
+
+    public static boolean hasSecretKeyByMasterKeyId(Context context, long masterKeyId) {
+        Uri queryUri = KeyRings.buildSecretKeyRingsByMasterKeyIdUri(Long.toString(masterKeyId));
+        // see if we can get our master key id back from the uri
+        return getMasterKeyId(context, queryUri) == masterKeyId;
     }
 
     /**
@@ -504,6 +558,26 @@ public class ProviderHelper {
         }
 
         return masterKeyId;
+    }
+
+    public static long getRowId(Context context, Uri queryUri) {
+        String[] projection = new String[]{KeyRings._ID};
+        Cursor cursor = context.getContentResolver().query(queryUri, projection, null, null, null);
+
+        long rowId = 0;
+        try {
+            if (cursor != null && cursor.moveToFirst()) {
+                int idCol = cursor.getColumnIndexOrThrow(KeyRings._ID);
+
+                rowId = cursor.getLong(idCol);
+            }
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        return rowId;
     }
 
     /**

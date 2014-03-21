@@ -78,15 +78,17 @@
     <string name="menu_import">Import</string>
     <string name="menu_import_from_nfc">Import from NFC</string>
     <string name="menu_export_keys">Export all keys</string>
+    <string name="menu_export_secret_keys">Export all secret keys</string>
     <string name="menu_export_key">Export to file</string>
     <string name="menu_delete_key">Delete key</string>
     <string name="menu_create_key">Create key</string>
     <string name="menu_create_key_expert">Create key (expert)</string>
     <string name="menu_search">Search</string>
-    <string name="menu_key_server">Import from keyserver</string>
+    <string name="menu_import_from_key_server">Keyserver</string>
+    <string name="menu_key_server">Keyserver…</string>
     <string name="menu_update_key">Update from keyserver</string>
     <string name="menu_export_key_to_server">Upload to key server</string>
-    <string name="menu_share">Share</string>
+    <string name="menu_share">Share…</string>
     <string name="menu_share_title_fingerprint">Share fingerprint…</string>
     <string name="menu_share_title">Share whole key…</string>
     <string name="menu_share_default_fingerprint">with…</string>
@@ -155,6 +157,11 @@
     <string name="revoked">revoked</string>
     <string name="user_id">User ID</string>
 
+    <plurals name="n_contacts">
+        <item quantity="one">1 contact</item>
+        <item quantity="other">%d contacts</item>
+    </plurals>
+
     <plurals name="n_key_servers">
         <item quantity="one">%d keyserver</item>
         <item quantity="other">%d keyservers</item>
@@ -213,6 +220,9 @@
     <string name="key_deletion_confirmation">Do you really want to delete the key \'%s\'?\nYou can\'t undo this!</string>
     <string name="key_deletion_confirmation_multi">Do you really want to delete all selected keys?\nYou can\'t undo this!</string>
     <string name="secret_key_deletion_confirmation">Do you really want to delete the SECRET key \'%s\'?\nYou can\'t undo this!</string>
+    <string name="public_key_deletetion_confirmation">Do you really want to delete the PUBLIC key \'%s\'?\nYou can\'t undo this!</string>
+    <string name="secret_key_delete_text">Delete Secret Keys ?</string>
+    <string name="also_export_secret_keys">Also export secret keys?</string>
 
     <plurals name="keys_added_and_updated_1">
         <item quantity="one">Successfully added %d key</item>
@@ -236,6 +246,7 @@
     <string name="keys_exported">Successfully exported %d keys.</string>
     <string name="no_keys_exported">No keys exported.</string>
     <string name="key_creation_el_gamal_info">Note: only subkeys support ElGamal, and for ElGamal the nearest keysize of 1536, 2048, 3072, 4096, or 8192 will be used.</string>
+    <string name="key_creation_weak_rsa_info">Note: generating RSA key with length 1024-bit and less is considered unsafe and it\'s disabled for generating new keys.</string>
     <string name="key_not_found">Couldn\'t find key %08X.</string>
 
     <plurals name="keys_found">
@@ -312,8 +323,8 @@
     </plurals>
 
     <!-- progress dialogs, usually ending in '…' -->
-    <string name="progress_done">done.</string>
-    <string name="progress_cancel">cancel</string>
+    <string name="progress_done">Done.</string>
+    <string name="progress_cancel">Cancel</string>
     <string name="progress_saving">saving…</string>
     <string name="progress_importing">importing…</string>
     <string name="progress_exporting">exporting…</string>
@@ -368,6 +379,7 @@
 
     <!-- Help -->
     <string name="help_tab_start">Start</string>
+    <string name="help_tab_faq">FAQ</string>
     <string name="help_tab_nfc_beam">NFC Beam</string>
     <string name="help_tab_changelog">Changelog</string>
     <string name="help_tab_about">About</string>
@@ -438,6 +450,7 @@
     <string name="key_list_empty_button_import">importing keys.</string>
 
     <!-- Key view -->
+    <string name="key_view_action_edit">Edit this key</string>
     <string name="key_view_action_encrypt">Encrypt to this contact</string>
     <string name="key_view_action_certify">Certify this contact\'s key</string>
     <string name="key_view_tab_main">Info</string>
@@ -452,5 +465,15 @@
     <string name="nav_apps">Registered Apps</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
+    <string name="edit">Edit</string>
+    <string name="my_keys">My Keys</string>
+    <string name="label_secret_key">Secret Key</string>
+    <string name="secret_key_yes">available</string>
+    <string name="secret_key_no">unavailable</string>
+    <string name="section_uids_to_sign">User IDs to sign</string>
+    <string name="progress_re_adding_certs">Reapplying certificates</string>
+
+    <!-- hints -->
+    <string name="encrypt_content_edit_text_hint">Write message here to encrypt…</string>
 
 </resources>

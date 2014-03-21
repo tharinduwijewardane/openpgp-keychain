@@ -17,12 +17,6 @@
 
 package org.sufficientlysecure.keychain.ui.adapter;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.sufficientlysecure.keychain.R;
-import org.sufficientlysecure.keychain.pgp.PgpKeyHelper;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -37,20 +31,28 @@ import android.widget.LinearLayout;
 import android.widget.LinearLayout.LayoutParams;
 import android.widget.TextView;
 
+import org.sufficientlysecure.keychain.R;
+import org.sufficientlysecure.keychain.helper.OtherHelper;
+import org.sufficientlysecure.keychain.pgp.PgpKeyHelper;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class ImportKeysAdapter extends ArrayAdapter<ImportKeysListEntry> {
     protected LayoutInflater mInflater;
     protected Activity mActivity;
 
-    protected List<ImportKeysListEntry> data;
-    static class ViewHolder{
+    protected List<ImportKeysListEntry> mData;
+
+    static class ViewHolder {
         private TextView mainUserId;
         private TextView mainUserIdRest;
         private TextView keyId;
         private TextView fingerprint;
         private TextView algorithm;
         private TextView status;
-
     }
+
     public ImportKeysAdapter(Activity activity) {
         super(activity, -1);
         mActivity = activity;
@@ -61,7 +63,7 @@ public class ImportKeysAdapter extends ArrayAdapter<ImportKeysListEntry> {
     public void setData(List<ImportKeysListEntry> data) {
         clear();
         if (data != null) {
-            this.data = data;
+            this.mData = data;
 
             // add data to extended ArrayAdapter
             if (Build.VERSION.SDK_INT >= 11) {
@@ -75,14 +77,15 @@ public class ImportKeysAdapter extends ArrayAdapter<ImportKeysListEntry> {
     }
 
     public List<ImportKeysListEntry> getData() {
-        return data;
+        return mData;
     }
 
     public ArrayList<ImportKeysListEntry> getSelectedData() {
         ArrayList<ImportKeysListEntry> selectedData = new ArrayList<ImportKeysListEntry>();
-        for (ImportKeysListEntry entry : data) {
-            if (entry.isSelected())
+        for (ImportKeysListEntry entry : mData) {
+            if (entry.isSelected()) {
                 selectedData.add(entry);
+            }
         }
         return selectedData;
     }
@@ -93,9 +96,9 @@ public class ImportKeysAdapter extends ArrayAdapter<ImportKeysListEntry> {
     }
 
     public View getView(int position, View convertView, ViewGroup parent) {
-        ImportKeysListEntry entry = data.get(position);
+        ImportKeysListEntry entry = mData.get(position);
         ViewHolder holder;
-        if(convertView == null) {
+        if (convertView == null) {
             holder = new ViewHolder();
             convertView = mInflater.inflate(R.layout.import_keys_list_entry, null);
             holder.mainUserId = (TextView) convertView.findViewById(R.id.mainUserId);
@@ -105,9 +108,8 @@ public class ImportKeysAdapter extends ArrayAdapter<ImportKeysListEntry> {
             holder.algorithm = (TextView) convertView.findViewById(R.id.algorithm);
             holder.status = (TextView) convertView.findViewById(R.id.status);
             convertView.setTag(holder);
-        }
-        else{
-            holder = (ViewHolder)convertView.getTag();
+        } else {
+            holder = (ViewHolder) convertView.getTag();
         }
         // main user id
         String userId = entry.userIds.get(0);
@@ -133,10 +135,10 @@ public class ImportKeysAdapter extends ArrayAdapter<ImportKeysListEntry> {
             holder.mainUserIdRest.setVisibility(View.GONE);
         }
 
-        holder.keyId.setText(entry.hexKeyId);
+        holder.keyId.setText(entry.keyIdHex);
 
-        if (entry.fingerPrint != null) {
-            holder.fingerprint.setText(mActivity.getString(R.string.fingerprint) + " " + entry.fingerPrint);
+        if (entry.fingerPrintHex != null) {
+            holder.fingerprint.setText(PgpKeyHelper.colorizeFingerprint(entry.fingerPrintHex));
             holder.fingerprint.setVisibility(View.VISIBLE);
         } else {
             holder.fingerprint.setVisibility(View.GONE);
@@ -151,6 +153,7 @@ public class ImportKeysAdapter extends ArrayAdapter<ImportKeysListEntry> {
         }
 
         LinearLayout ll = (LinearLayout) convertView.findViewById(R.id.list);
+        ll.removeAllViews();
         if (entry.userIds.size() == 1) {
             ll.setVisibility(View.GONE);
         } else {

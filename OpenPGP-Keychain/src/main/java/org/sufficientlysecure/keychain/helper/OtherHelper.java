@@ -17,19 +17,26 @@
 
 package org.sufficientlysecure.keychain.helper;
 
-import java.util.Iterator;
-import java.util.Set;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 
 import org.sufficientlysecure.keychain.Constants;
 import org.sufficientlysecure.keychain.util.Log;
 
-import android.os.Bundle;
+import java.security.DigestException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Iterator;
+import java.util.Set;
 
 public class OtherHelper {
 
     /**
      * Logs bundle content to debug for inspecting the content
-     * 
+     *
      * @param bundle
      * @param bundleName
      */
