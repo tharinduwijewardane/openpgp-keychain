@@ -5,18 +5,18 @@ For a more detailed description and installation instructions go to http://www.o
 
 ### Travis CI Build Status
 
-[![Build Status](https://travis-ci.org/openpgp-keychain/openpgp-keychain.png?branch=master)](https://travis-ci.org/openpgp-keychain/openpgp-keychain)
+[![Build Status](https://travis-ci.org/open-keychain/open-keychain.png?branch=master)](https://travis-ci.org/open-keychain/open-keychain)
 
 ## How to help the project?
 
 ### Translate the application
 
-Translations are managed at Transifex, please contribute there at https://www.transifex.com/projects/p/openpgp-keychain/
+Translations are managed at Transifex, please contribute there at https://www.transifex.com/projects/p/open-keychain/
 
 ### Contribute Code
 
 1. Join the development mailinglist at http://groups.google.com/d/forum/openpgp-keychain-dev
-2. Lookout for interesting issues on our issue page at Github: https://github.com/openpgp-keychain/openpgp-keychain/issues
+2. Lookout for interesting issues on our issue page at Github: https://github.com/open-keychain/open-keychain/issues
 3. Tell us about your plans on the mailinglist
 4. Read this README, especially the notes about coding style
 5. Fork OpenKeychain and contribute code (the best part ;) )
@@ -34,15 +34,15 @@ Development mailinglist at http://groups.google.com/d/forum/openpgp-keychain-dev
 2. Open the Android SDK Manager (shell command: ``android``).  
 Expand the Tools directory and select "Android SDK Build-tools (Version 19.0.3)".  
 Expand the Extras directory and install "Android Support Repository"  
-Select everything for the newest SDK (API-Level 19)
+Select everything for the newest SDK Platform (API-Level 19)
 3. Export ANDROID_HOME pointing to your Android SDK
 4. Execute ``./gradlew build``
-5. You can install the app with ``adb install -r OpenPGP-Keychain/build/apk/OpenPGP-Keychain-debug-unaligned.apk``
+5. You can install the app with ``adb install -r OpenKeychain/build/apk/OpenKeychain-debug-unaligned.apk``
 
 ### Build API Demo with Gradle
 
 1. Follow 1-3 from above
-2. Change to API Demo directory ``cd OpenPGP-Keychain-API``
+2. Change to API Demo directory ``cd OpenKeychain-API``
 3. Execute ``./gradlew build``
 
 ### Development with Android Studio
@@ -52,7 +52,7 @@ I am using the newest [Android Studio](http://developer.android.com/sdk/installi
 1. Clone the project from github
 2. From Android Studio: File -> Import Project ->  ...
   * Select the cloned top folder if you want to develop on the main project
-  * Select the "OpenPGP-Keychain-API" folder if you want to develop on the API example
+  * Select the "OpenKeychain-API" folder if you want to develop on the API example
 3. Import project from external model -> choose Gradle
 
 ## OpenKeychain's API
@@ -64,8 +64,8 @@ The Remote OpenPGP API is more sophisticated and allows to to operations without
 When utilizing this API, OpenKeychain asks the user on first use to grant access for the calling client application.
 
 More technical information and examples about these APIs can be found in the project's wiki:  
-* [Intent API](https://github.com/openpgp-keychain/openpgp-keychain/wiki/Intent-API)
-* [Remote OpenPGP API](https://github.com/openpgp-keychain/openpgp-keychain/wiki/OpenPGP-API)
+* [Intent API](https://github.com/open-keychain/open-keychain/wiki/Intent-API)
+* [Remote OpenPGP API](https://github.com/open-keychain/open-keychain/wiki/OpenPGP-API)
 
 
 ## Libraries
@@ -119,10 +119,10 @@ When changing build files or dependencies, respect the following requirements:
 * In order to update the build system to a newer gradle version you need to:
   * Update every build.gradle file with the new gradle version and/or gradle plugin version
     * build.gradle
-    * OpenPGP-Keychain/build.gradle
-    * OpenPGP-Keychain-API/build.gradle
-    * OpenPGP-Keychain-API/example-app/build.gradle
-    * OpenPGP-Keychain-API/libraries/keychain-api-library/build.gradle
+    * OpenKeychain/build.gradle
+    * OpenKeychain-API/build.gradle
+    * OpenKeychain-API/example-app/build.gradle
+    * OpenKeychain-API/libraries/keychain-api-library/build.gradle
   * run ./gradlew wrapper twice to update gradle and download the new jar file
   * commit the new jar and property files
 
@@ -145,15 +145,9 @@ see http://help.transifex.net/features/client/index.html#user-client
 * Opening braces don't go on their own line
 * Field names: Non-public, non-static fields start with m.
 * Acronyms are words: Treat acronyms as words in names, yielding !XmlHttpRequest, getUrl(), etc.
+* Fully Qualify Imports: Do *not* use wildcard-imports such as ``import foo.*;``
 
-See http://source.android.com/source/code-style.html
-
-### XML Eclipse Settings
-* XML Maximum line width 999
-* XML: Split multiple attributes each on a new line (Eclipse: Properties -> XML -> XML Files -> Editor)
-* XML: Indent using spaces with Indention size 4 (Eclipse: Properties -> XML -> XML Files -> Editor)
-
-See http://www.androidpolice.com/2009/11/04/auto-formatting-android-xml-files-with-eclipse/
+The full coding style can be found at http://source.android.com/source/code-style.html
 
 ### Automated syntax check with CheckStyle
 
@@ -173,8 +167,9 @@ See http://www.androidpolice.com/2009/11/04/auto-formatting-android-xml-files-wi
 3. Start code inspection and see the results by selecting Analyze > Inspect Code from Android-Studio.
 
 ## Licenses
-OpenPGP Kechain is licensed under GPLv3+.
-Some parts (older parts and some libraries are Apache License v2, MIT X11 License)
+OpenKechain is licensed under GPLv3+.
+The full license text can be found in the [LICENSE file](https://github.com/open-keychain/open-keychain/blob/master/LICENSE).
+Some parts and some libraries are Apache License v2, MIT X11 License (see below).
 
 > This program is free software: you can redistribute it and/or modify
 > it under the terms of the GNU General Public License as published by
@@ -227,10 +222,6 @@ Some parts (older parts and some libraries are Apache License v2, MIT X11 Licens
 ### Images
 * icon.svg  
   modified version of kgpg_key2_kopete.svgz
-
-* key.svg  
-  http://rrze-icon-set.berlios.de/  
-  Creative Commons Attribution Share-Alike licence 3.0
   
 * Menu icons  
   http://developer.android.com/design/downloads/index.html#action-bar-icon-pack
